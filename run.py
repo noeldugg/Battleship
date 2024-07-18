@@ -64,6 +64,12 @@ class BattleshipBoard:
         if not self.is_ship(row,col):
             self.grid[row][col] = GUESS
 
+    def to_string(self, show_ship: bool = False) -> str:
+        rows_str: list[str] = []
+        for row in self.grid:
+            row_repr = [HIDDEN if col == SHIP and not show_ship else col for col in row]
+            rows_str.append(" ".join(row_repr))
+        return "\n".join(rows_str)
 
 class Game:
     def __init__(self,players):
@@ -71,17 +77,12 @@ class Game:
         for player in range(players):
             self.player_list.append(GUESSES_COUNT)
             self.current_player = 1
-            self.board = self.create_matrix(5,5)
-            self.board_visible = c.deepcopy(self.board)
+        self.board = BattleshopBoard(BOARD_SIZE_X, BOARD_SIZE_Y)
            
 
 
-
-def already_guessed(self, row: int, col: int) -> bool:
-    return self.board[row][col] == "X"
-
 def game_logic(self):
-    guess_row, guess_col = read_guess(self.already_guessed)
+    guess_row, guess_col = read_guess(self.board.already_guessed)
 
     if (
         self.board[guess_row][guess_col]
