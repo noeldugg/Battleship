@@ -1,165 +1,124 @@
-from random import randint
+import random as rand
+import os
+from typing import Callable
 
-    
-
+# Constants for the game configuration
 GUESSES = 10
-BOARD_SIZE_X = 10
-BOARD_SIZE_Y = 10
+BOARD_SIZE_X = 5
+BOARD_SIZE_Y = 5
 
-#Represents elements on the board
+# Symbols used on the board
 HIDDEN = "O"
 SHIP = "S"
 GUESS = "X"
 
-
-    
-def user_input(min_value: int = 1,max_value: int = 10) -> int:
+def user_input(prompt: str, min_value: int = 1, max_value: int = BOARD_SIZE_X) -> int:
     """
-    Reads an integer that will provide a min and max value
-     """
+    Prompt the user for input and ensure it is within the specified range.
+    """
     while True:
-        line = input(prompt)
-        try: 
-            value = int(line)
-            if value < min_value:
-                print(f"The minium value is {min_value}. Try again.")
-            elif value > max_value:
-                print(f"The maxium value is {max_value}. Try again.")
-            else: 
+        try:
+            value = int(input(prompt))
+            if min_value <= value <= max_value:
                 return value
+            else:
+                print(f"Please enter a number between {min_value} and {max_value}.")
         except ValueError:
-            print("Not a number, try again")
-             
+            print("Invalid input, please enter a number.")
 
-
-
-def player_guesses(self,already_guessed: Callable[[int, int], bool]) -> tuple[int,int]:
+def player_guesses(already_guessed: Callable[[int, int], bool]) -> tuple[int, int]:
+    """
+    Obtain valid guess coordinates from the player.
+    """
     while True:
-     # reads row and column
-        guess_row = user_input("Guess row: ", max_value=10) - 1
-        guess_col = user_input("Guess column: ", max_value=10) - 1
-        
-     # if guess is value return guessed row and column
+        guess_row = user_input("Guess row (1-5): ", max_value=BOARD_SIZE_Y) - 1
+        guess_col = user_input("Guess column (1-5): ", max_value=BOARD_SIZE_X) - 1
         if not already_guessed(guess_row, guess_col):
             return guess_row, guess_col
+        else:
+            print("That spot has already been guessed. Try again.")
 
 class BattleshipBoard:
-
     def __init__(self, size_x: int, size_y: int) -> None:
-        #Create the Grid
+        """
+        Initialize the board and place the ship.
+        """
         self.grid = [[HIDDEN] * size_x for _ in range(size_y)]
-
-        # place a random ship on the grid 
-        self.ship_row = rand.randint(0,size_x - 1)
-        self.ship_col = rand.randint(0,size_y - 1)
-        self.grid[ship_row][ship_col] = SHIP 
+        self.ship_row = rand.randint(0, size_y - 1)
+        self.ship_col = rand.randint(0, size_x - 1)
+        self.grid[self.ship_row][self.ship_col] = SHIP
 
     def is_ship(self, row: int, col: int) -> bool:
+        """
+        Check if the given coordinates contain the ship.
+        """
         return self.grid[row][col] == SHIP
 
-    def already_guessed(self,row:int,col: int) -> bool:
+    def already_guessed(self, row: int, col: int) -> bool:
+        """
+        Check if the given coordinates have already been guessed.
+        """
         return self.grid[row][col] == GUESS
 
-    def place_guess(self,row: int, col: int) -> None:
-        if not self.is_ship(row,col):
+    def place_guess(self, row: int, col: int) -> None:
+        """
+        Mark the guessed position on the board.
+        """
+        if not self.is_ship(row, col):
             self.grid[row][col] = GUESS
 
-    def to_string(self, show_ship: bool = False) -> str:
-        rows_str: list[str] = []
+    def display(self, show_ship: bool = False) -> str:
+        """
+        Display the board to the player.
+        """
+        rows_str = []
         for row in self.grid:
-            row_repr = [HIDDEN if col == SHIP and not show_ship else col for col in row]
-            rows_str.append(" ".join(row_repr))
+            rows_str.append(" ".join([HIDDEN if col == SHIP and not show_ship else col for col in row]))
         return "\n".join(rows_str)
 
-def turn(board:BattleshipBoard) -> bool:
+def turn(board: BattleshipBoard) -> bool:
     """
-    Single Players Turn
+    Execute a single turn of the game.
     """
-
-    print(board.to_string())
-
-    #let the player guess
-    guess_row, guess_col = read_guess(board.already_guessed)
+    print(board.display())
+    guess_row, guess_col = player_guesses(board.already_guessed)
     board.place_guess(guess_row, guess_col)
-
-    return board.is_ship(guess.row, guess_col)
+    return board.is_ship(guess_row, guess_col)
 
 def play_game(player_count: int, board: BattleshipBoard) -> None:
     """
-    Play a game of Battleship with a given number of players
+    Main game loop for playing Battleship.
     """
-
     os.system("clear")
-    
-    total_guesses = 0 
+    total_guesses = 0
 
-    while total_guesses < GUESSES_COUNT * player_count:
-        # determine the current player and the remaining guesses for that player
+    while total_guesses < GUESSES * player_count:
         current_player = (total_guesses % player_count) + 1
-        remaining_guesses = GUESSES_COUNT - total_guesses // player_count
+        remaining_guesses = GUESSES - total_guesses // player_count
 
         print(f"Player {current_player}'s turn: {remaining_guesses} guesses left.")
         
         if turn(board):
-            print(f" Player {current_player} sank the ship")
+            print(f"Player {current_player} sank the ship!")
             break
         else:
-            print("You missed!" )
-
+            print("You missed!")
         total_guesses += 1
 
-class Game:
-    def __init__(self,players):
-        self.player_list = []
-        for player in range(players):
-            self.player_list.append(GUESSES_COUNT)
-            self.current_player = 1
-        self.board = BattleshopBoard(BOARD_SIZE_X, BOARD_SIZE_Y)
-           
-
-
-def game_logic(self):
-    guess_row, guess_col = read_guess(self.board.already_guessed)
-
-    if (
-        self.board[guess_row][guess_col]
-        == self.board[self.ship_row][self.ship_col]
-
-    ):
-
-        return True 
-    else:
-        if self.player_list[self.current_player - 1] > 0:
-            print("You missed")
-            self.board[guess_row][guess_col] = "X"
-            self.board_visible[guess_row][guess_col] = "X"
-            self.player_list[self.current_player - 1] -= 1
-            self.print_board(self.board_visible)
-
-            if len(self.player_list) > 1:
-                self.current_player += 1
-            if self.current_player > len(self.player_list):
-                self.current_player = 1
-            return self.game_logic()
-        else:
-            print("Player {} ran out of guesses". format(self.current_player))
-            return False
-
-
-
-
-
-
-
-
-
-
+    if total_guesses >= GUESSES * player_count:
+        print("Game Over. The ship wasn't found.")
+    print(board.display(show_ship=True))
 
 def main() -> None:
     os.system("clear")
-    player_count = user_input("Enter how many Players are playing", max_value=2)
-    battleship = Game(player_count)
-    battleship.main()
+    print("Welcome to Battleship! Locate and sink your enemy's ship.")
+    while True:
+        player_count = user_input("Enter the number of players (1-2): ", max_value=2)
+        board = BattleshipBoard(BOARD_SIZE_X, BOARD_SIZE_Y)
+        play_game(player_count, board)
+        if input("Do you want to play again? (yes/no): ").strip().lower() != 'yes':
+            print("Thank you for playing Battleship!")
+            break
 
 if __name__ == "__main__":
     main()
