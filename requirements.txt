@@ -10,3 +10,4 @@ rsa==4.7.2
 os
 random
 typing
+typing-extensions
