@@ -38,6 +38,16 @@ def player_guesses(already_guessed: Callable[[int, int], bool]) -> tuple[int, in
         else:
             print("That spot has already been guessed. Try again.")
 
+def computer_guesses(already_guessed: Callable[[int, int], bool], size_x: int, size_y: int) -> tuple[int, int]:
+    """
+    Generate valid guess coordinates for the computer.
+    """
+    while True:
+        guess_row = rand.randint(0, size_y - 1)
+        guess_col = rand.randint(0, size_x - 1)
+        if not already_guessed(guess_row, guess_col):
+            return guess_row, guess_col
+
 class BattleshipBoard:
     def __init__(self, size_x: int, size_y: int) -> None:
         """
@@ -76,46 +86,64 @@ class BattleshipBoard:
             rows_str.append(" ".join([HIDDEN if col == SHIP and not show_ship else col for col in row]))
         return "\n".join(rows_str)
 
-def turn(board: BattleshipBoard) -> bool:
+def turn(board: BattleshipBoard, player: str) -> bool:
     """
     Execute a single turn of the game.
     """
-    print(board.display())
-    guess_row, guess_col = player_guesses(board.already_guessed)
+    if player == "Player":
+        print("Your Board:")
+        print(board.display(show_ship=True))
+        guess_row, guess_col = player_guesses(board.already_guessed)
+    else:  # Computer's turn
+        guess_row, guess_col = computer_guesses(board.already_guessed, BOARD_SIZE_X, BOARD_SIZE_Y)
+        print(f"Computer guesses row {guess_row + 1}, column {guess_col + 1}")
+    
     board.place_guess(guess_row, guess_col)
     return board.is_ship(guess_row, guess_col)
 
-def play_game(player_count: int, board: BattleshipBoard) -> None:
+def play_game() -> None:
     """
     Main game loop for playing Battleship.
     """
     os.system("clear")
+    player_board = BattleshipBoard(BOARD_SIZE_X, BOARD_SIZE_Y)
+    computer_board = BattleshipBoard(BOARD_SIZE_X, BOARD_SIZE_Y)
     total_guesses = 0
 
-    while total_guesses < GUESSES * player_count:
-        current_player = (total_guesses % player_count) + 1
-        remaining_guesses = GUESSES - total_guesses // player_count
+    while total_guesses < GUESSES * 2:
+        current_player = "Player" if total_guesses % 2 == 0 else "Computer"
+        remaining_guesses = GUESSES - total_guesses // 2
 
-        print(f"Player {current_player}'s turn: {remaining_guesses} guesses left.")
-        
-        if turn(board):
-            print(f"Player {current_player} sank the ship!")
-            break
+        print(f"{current_player}'s turn: {remaining_guesses} guesses left.")
+
+        if current_player == "Player":
+            if turn(computer_board, current_player):
+                print("You sank the computer's ship!")
+                break
+            else:
+                print("You missed!")
         else:
-            print("You missed!")
+            if turn(player_board, current_player):
+                print("Computer sank your ship!")
+                break
+            else:
+                print("Computer missed!")
+
         total_guesses += 1
 
-    if total_guesses >= GUESSES * player_count:
-        print("Game Over. The ship wasn't found.")
-    print(board.display(show_ship=True))
+    if total_guesses >= GUESSES * 2:
+        print("Game Over. The ships weren't found.")
+    print("Final Boards:")
+    print("Your Board:")
+    print(player_board.display(show_ship=True))
+    print("Computer's Board:")
+    print(computer_board.display(show_ship=True))
 
 def main() -> None:
     os.system("clear")
     print("Welcome to Battleship! Locate and sink your enemy's ship.")
     while True:
-        player_count = user_input("Enter the number of players (1-2): ", max_value=2)
-        board = BattleshipBoard(BOARD_SIZE_X, BOARD_SIZE_Y)
-        play_game(player_count, board)
+        play_game()
         if input("Do you want to play again? (yes/no): ").strip().lower() != 'yes':
             print("Thank you for playing Battleship!")
             break
