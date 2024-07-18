@@ -33,6 +33,60 @@ def user_input(min_value: int = 1,max_value: int = 10) -> int:
 
 
 
+def player_guesses(self,already_guessed: Callable[[int, int], bool]) -> tuple[int,int]:
+    while True:
+     # reads row and column
+        guess_row = user_input("Guess row: ", max_value=10) - 1
+        guess_col = user_input("Guess column: ", max_value=10) - 1
+        
+     # if guess is value return guessed row and column
+        if not already_guessed(guess_row, guess_col):
+            return guess_row, guess_col
+
+
+
+class Game:
+    def __init__(self,players):
+        self.player_list = []
+        for player in range(players):
+            self.player_list.append(GUESSES_COUNT)
+
+
+def already_guessed(self, row: int, col: int) -> bool:
+    return self.board[row][col] == "X"
+
+def game_logic(self):
+    guess_row, guess_col = read_guess(self.already_guessed)
+
+    if (
+        self.board[guess_row][guess_col]
+        == self.board[self.ship_row][self.ship_col]
+
+    ):
+
+        return True 
+    else:
+        if self.player_list[self.current_player - 1] > 0:
+            print("You missed")
+            self.board[guess_row][guess_col] = "X"
+            self.board_visible[guess_row][guess_col] = "X"
+            self.player_list[self.current_player - 1] -= 1
+            self.print_board(self.board_visible)
+
+            if len(self.player_list) > 1:
+                self.current_player += 1
+            if self.current_player > len(self.player_list):
+                self.current_player = 1
+            return self.game_logic()
+        else:
+            print("Player {} ran out of guesses". format(self.current_player))
+            return False
+
+
+
+
+
+
 
 
 
@@ -40,7 +94,7 @@ def user_input(min_value: int = 1,max_value: int = 10) -> int:
 
 def main() -> None:
     os.system("clear")
-    player_count = read_int("Enter how many Players are playing", max_value=2)
+    player_count = user_input("Enter how many Players are playing", max_value=2)
     battleship = Game(player_count)
     battleship.main()
 
