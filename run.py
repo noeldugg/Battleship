@@ -43,6 +43,26 @@ def player_guesses(self,already_guessed: Callable[[int, int], bool]) -> tuple[in
         if not already_guessed(guess_row, guess_col):
             return guess_row, guess_col
 
+class BattleshipBoard:
+
+    def __init__(self, size_x: int, size_y: int) -> None:
+        #Create the Grid
+        self.grid = [[HIDDEN] * size_x for _ in range(size_y)]
+
+        # place a random ship on the grid 
+        self.ship_row = rand.randint(0,size_x - 1)
+        self.ship_col = rand.randint(0,size_y - 1)
+        self.grid[ship_row][ship_col] = SHIP 
+
+    def is_ship(self, row: int, col: int) -> bool:
+        return self.grid[row][col] == SHIP
+
+    def already_guessed(self,row:int,col: int) -> bool:
+        return self.grid[row][col] == GUESS
+
+    def place_guess(self,row: int, col: int) -> None:
+        if not self.is_ship(row,col):
+            self.grid[row][col] = GUESS
 
 
 class Game:
@@ -50,6 +70,11 @@ class Game:
         self.player_list = []
         for player in range(players):
             self.player_list.append(GUESSES_COUNT)
+            self.current_player = 1
+            self.board = self.create_matrix(5,5)
+            self.board_visible = c.deepcopy(self.board)
+           
+
 
 
 def already_guessed(self, row: int, col: int) -> bool:
