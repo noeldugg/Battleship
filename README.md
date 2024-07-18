@@ -4,7 +4,7 @@ Ultimate Battleship is a Python terminal game that challenges players to find an
 
 [Here is the live version of my project.](https://battleshipsss-b1a21ca3ddfb.herokuapp.com/)
 
-![Live Version](https://battleshipsss-b1a21ca3ddfb.herokuapp.com/)
+
 
 
 
@@ -27,8 +27,8 @@ In this version, the player enters their name and two boards are randomly genera
 - **Random board generation**
   - Ships are randomly placed on both the player and computer boards
   - The player cannot see where the computer’s ships are
+  - ![Screenshot 2024-07-18 18 59 30](https://github.com/user-attachments/assets/fdaa6771-364f-4c6d-8ca1-93f6f3e1acb0)
 
-![Game Screenshot](file-F3ukDgwkl1fgRrhVxxtttxKw)
 
 - **Play against the computer**
 - **Accepts user input**
@@ -38,7 +38,7 @@ In this version, the player enters their name and two boards are randomly genera
   - You must enter numbers
   - You cannot enter the same guess twice
 
-![Input Validation](file-OvhPjhZOdklpY6B2hZBAyOf5)
+![Screenshot 2024-07-18 19 02 09](https://github.com/user-attachments/assets/6071fe34-9644-483b-97c8-e355f83774b2)
 
 - **Data maintained in class instances**
 
