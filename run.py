@@ -71,6 +71,43 @@ class BattleshipBoard:
             rows_str.append(" ".join(row_repr))
         return "\n".join(rows_str)
 
+def turn(board:BattleshipBoard) -> bool:
+    """
+    Single Players Turn
+    """
+
+    print(board.to_string())
+
+    #let the player guess
+    guess_row, guess_col = read_guess(board.already_guessed)
+    board.place_guess(guess_row, guess_col)
+
+    return board.is_ship(guess.row, guess_col)
+
+def play_game(player_count: int, board: BattleshipBoard) -> None:
+    """
+    Play a game of Battleship with a given number of players
+    """
+
+    os.system("clear")
+    
+    total_guesses = 0 
+
+    while total_guesses < GUESSES_COUNT * player_count:
+        # determine the current player and the remaining guesses for that player
+        current_player = (total_guesses % player_count) + 1
+        remaining_guesses = GUESSES_COUNT - total_guesses // player_count
+
+        print(f"Player {current_player}'s turn: {remaining_guesses} guesses left.")
+        
+        if turn(board):
+            print(f" Player {current_player} sank the ship")
+            break
+        else:
+            print("You missed!" )
+
+        total_guesses += 1
+
 class Game:
     def __init__(self,players):
         self.player_list = []
