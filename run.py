@@ -1,5 +1,17 @@
 from random import randint
+import os
     
+
+GUESSES = 10
+BOARD_SIZE_X = 10
+BOARD_SIZE_Y = 10
+
+#Represents elements on the board
+HIDDEN = "O"
+SHIP = "S"
+GUESS = "X"
+
+
     
 def user_input(min_value: int = 1,max_value: int = 10) -> int:
     """
@@ -20,3 +32,17 @@ def user_input(min_value: int = 1,max_value: int = 10) -> int:
              
 
 
+
+
+
+
+
+
+def main() -> None:
+    os.system("clear")
+    player_count = read_int("Enter how many Players are playing", max_value=2)
+    battleship = Game(player_count)
+    battleship.main()
+
+if __name__ == "__main__":
+    main()
