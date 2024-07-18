@@ -39,6 +39,8 @@ In this version, the player enters their name and two boards are randomly genera
   - You cannot enter the same guess twice
 
 ![Screenshot 2024-07-18 19 02 09](https://github.com/user-attachments/assets/6071fe34-9644-483b-97c8-e355f83774b2)
+- Who ever guesses where the ship first wins the game
+
 
 - **Data maintained in class instances**
 
@@ -80,8 +82,16 @@ I have manually tested this project by doing the following:
 - **PEP8**: No errors were returned from PEP8online.com
 
 ## Deployment
+The project is deployed on Heroku. Follow these steps to deploy your own version:
 
-This project was deployed using a standard terminal.
+Create a new Heroku app and set the buildpacks:
+heroku/python
+heroku/nodejs
+Set the PORT environment variable to 8000.
+Push the code to Heroku:
+Copy code
+git push heroku main
+The game will be available at your Heroku app's URL.
 
 ### Steps for deployment:
 
